@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>14</LangVersion>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AngleSharp.Css" Version="1.0.0-beta.167" />
+      <PackageReference Include="ColorMine" Version="1.1.3" />
+      <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.2" />
+      <PackageReference Include="NetCord" Version="1.0.0-alpha.455" />
+      <PackageReference Include="NetCord.Hosting" Version="1.0.0-alpha.455" />
+      <PackageReference Include="NetCord.Hosting.AspNetCore" Version="1.0.0-alpha.455" />
+      <PackageReference Include="NetCord.Hosting.Services" Version="1.0.0-alpha.455" />
+      <PackageReference Include="NetCord.Services" Version="1.0.0-alpha.455" />
+      <PackageReference Include="QuestPDF" Version="2025.12.3.1-alpha2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="EnananBot.db">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Resources\Fonts\*.ttf">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include=".github\workflows\deploy.yml" />
+    </ItemGroup>
+
+</Project>

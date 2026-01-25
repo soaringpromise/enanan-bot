@@ -1,0 +1,52 @@
+﻿name: Deploy EnananBot (Docker)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        
+      - name: Copy project to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "."
+          target: "~/enanan-bot"
+          exclude: |
+            data/**
+            **/.git**
+            **/bin/**
+            **/obj/**
+            **/*.user**
+            **/*.lock.json**
+
+      - name: Build and restart container
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: DISCORD__TOKEN
+          script: |
+            cd ~/enanan-bot
+            rm -rf bin obj
+            docker stop enanan || true
+            docker rm enanan || true
+            docker rmi enanan-image || true
+            docker build --no-cache -t enanan-image .
+            docker run -d \
+              --name enanan \
+              --restart unless-stopped \
+              -e Discord__Token="$DISCORD__TOKEN" \
+              -v ~/enanan-data:/app/data \
+              enanan-image
+        env:
+          DISCORD__TOKEN: ${{ secrets.DISCORD__TOKEN }}
