@@ -141,20 +141,23 @@ public static class ColorUtils
         var baseLab = baseRgb.To<Lab>();
         var baseLch = baseLab.To<Lch>();
 
+        var darkL = Math.Max(0, baseLch.L - 40);
+        var lightL = Math.Min(100, baseLch.L + 40);
+
         // Generate a Darker variant (lower Lightness)
         var darkLch = new Lch
         {
-            L = Math.Max(0, baseLch.L - 40),
-            C = baseLch.C * 0.85, // Slightly desaturated
-            H = baseLch.H         // Same Hue
+            L = darkL,
+            C = ScaleChroma(darkL, baseLch.C),
+            H = baseLch.H
         };
 
         // Generate a Lighter variant (higher Lightness)
         var lightLch = new Lch
         {
-            L = Math.Min(100, baseLch.L + 40),
-            C = baseLch.C * 0.70, // More desaturated
-            H = baseLch.H         // Same Hue
+            L = lightL,
+            C = ScaleChroma(lightL, baseLch.C),
+            H = baseLch.H
         };
 
         var results = new string[steps];
@@ -172,10 +175,11 @@ public static class ColorUtils
                 ? InterpolateLch(darkLch, baseLch, t * 2)
                 : InterpolateLch(baseLch, lightLch, (t - 0.5) * 2);
 
-            var rgb = resultLch.To<Rgb>();
+            var safeRgb = ToSafeRgb(resultLch);
 
-            results[i] = $"#{Clamp(rgb.R):X2}{Clamp(rgb.G):X2}{Clamp(rgb.B):X2}";
+            results[i] = $"#{Clamp(safeRgb.R):X2}{Clamp(safeRgb.G):X2}{Clamp(safeRgb.B):X2}";
         }
+
         return results;
     }
     
@@ -184,8 +188,40 @@ public static class ColorUtils
     {
         L = c1.L + (c2.L - c1.L) * t,
         C = c1.C + (c2.C - c1.C) * t,
-        H = c1.H + (c2.H - c1.H) * t
+        H = InterpHue(c1.H, c2.H, t)
     };
     
+    private static double InterpHue(double h1, double h2, double t)
+    {
+        var delta = (h2 - h1 + 540) % 360 - 180;
+        return (h1 + delta * t + 360) % 360;
+    }
+
+    private static double ScaleChroma(double luminance, double baseChroma)
+    {
+        // Tapers chroma near white and black
+        var factor = Math.Sin(luminance / 100 * Math.PI);
+        return baseChroma * factor;
+    }
+
+    private static Rgb ToSafeRgb(Lch lch)
+    {
+        var c = lch.C;
+
+        while (c > 0)
+        {
+            var rgb = new Lch { L = lch.L, C = c, H = lch.H }.To<Rgb>();
+
+            if (rgb.R is >= 0 and <= 255 &&
+                rgb.G is >= 0 and <= 255 &&
+                rgb.B is >= 0 and <= 255)
+                return rgb;
+
+            c -= 1;
+        }
+
+        return new Rgb { R = 67, G = 67, B = 67 };
+    }
+
     private static byte Clamp(double v) => (byte)Math.Max(0, Math.Min(255, v));
 }
