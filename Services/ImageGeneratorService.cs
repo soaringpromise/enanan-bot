@@ -205,7 +205,7 @@ public sealed class ImageGeneratorService
                             .MinHeight(20)
                             .AlignBottom()
                             .PaddingBottom(2)
-                            .Text("Today at 25:00") // "25:00" is a stylistic choice?
+                            .Text("Today at 25:00") // Reference to "Nightcord at 25:00"
                             .FontColor(TextTimestamp)
                             .FontSize(12)
                             .FontFamily("Inter");
