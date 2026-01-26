@@ -95,9 +95,7 @@ builder.Services
         {
             Activities = [
                 new UserActivityProperties("Custom Status", UserActivityType.Custom)
-                    { State = "🎨 Here to paint your world~!" }, 
-                new UserActivityProperties("Custom Status", UserActivityType.Custom) 
-                    { State = "🖌️ One color at a time…" }]
+                    { State = "🎨 Here to paint your world~!" }]
 
         };
     })
