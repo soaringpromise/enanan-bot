@@ -86,32 +86,57 @@ public class RoleCommands(
                     _validationService.ValidateRequiredColor(roleColor, username)))
                 return;
 
-            // Apply decorations (e.g. "★ RoleName ★")
+            // Apply decorations (e.g. "★ Role Name ★")
             if (!string.IsNullOrWhiteSpace(decoration))
                 roleName = roleName.DecorateRoleName(decoration);
 
-            // 4. Action: Create Role on Discord
+            // 4. Create Role on Discord
             var role = await guild.CreateRoleAsync(
                 new RoleProperties()
                     .WithName(roleName)
                     .WithColor(ColorUtils.GetDiscordColor(roleColor))
-                    .WithMentionable(false)); // Personal roles shouldn't be mentionable by default to avoid spam
+                    .WithMentionable(false)); // Personal roles shouldn't be mentionable by default
 
-            // 5. Action: Assign to User
+            // 5. Assign role to User
             await guild.AddUserRoleAsync(user.Id, role.Id);
+            
+            try
+            {
+                // 6.1. Get the bot's member object in this guild
+                var botMember = await guild.GetUserAsync(1460482352001323185);
 
-            // 6. Action: Save to Database
+                // 6.2. Get the highest role the bot currently has
+                var botTopRole = botMember.GetRoles(guild).MaxBy(r => r.Position);
+
+                // 6.3. Calculate a safe target position:
+                var targetPosition = botTopRole.Position - 1;
+
+                // 6.4. Clamp the value so it never goes below @everyone
+                targetPosition = Math.Max(targetPosition, 1);
+
+                // 6.5. Create the role position change object
+                var pos = new RolePositionProperties(role.Id).WithPosition(targetPosition);
+
+                // 6.6. Apply the role position change
+                await guild.ModifyRolePositionsAsync([pos]);
+            }
+            catch
+            {
+                // Intentionally ignore any failures here
+            }
+            
+            // 7. Save to Database
             if (await guildCache.SetRoleAsync(guild.Id, user.Id, role.Id))
             {
-                // Success!
+                // Success
                 await ResponseUtils.SendSimpleResponse(
                     Context,
                     messages.RoleCreateSuccess(username));
             }
             else
             {
-                // CRITICAL FAILURE: DB Write failed.
-                // Rollback: Delete the role we just created so the user isn't stuck with a "ghost" role.
+                // CRITICAL FAILURE: DB Write failed
+                // Rollback: Delete the role we just created so the user isn't stuck with a "ghost" role
                 await role.DeleteAsync();
 
                 await ResponseUtils.SendSimpleResponse(
