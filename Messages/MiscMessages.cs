@@ -59,38 +59,4 @@ public static class MiscMessages
         "**Alright, here's the full user list for {0}:**",
         "**These are all the users I'm tracking in {0}:**"
     ];
-    
-    // Dialogue for the Automatic Link Fixer (e.g., Twitter -> FxTwitter).
-    // Complex formatting:
-    // {0} = Original Platform Name (e.g. "Twitter")
-    // {1} = Original URL
-    // {2} = Fixed Platform Name (e.g. "FxTwitter")
-    // {3} = Fixed URL
-    public static readonly string[] LinkFixed =
-    [
-        "Oh, I fixed your original **[{0}](<{1}>)** link using **[{2}]({3})**.",
-        "I took a look at that **[{0}](<{1}>)** link and updated it to **[{2}]({3})**.",
-        "Your **[{0}](<{1}>)** link has been corrected to **[{2}]({3})**~!",
-        "I went ahead and fixed that **[{0}](<{1}>)** link using **[{2}]({3})**.",
-        "Alright! **[{0}](<{1}>)** should now point to **[{2}]({3})**.",
-        "The **[{0}](<{1}>)** link is now updated with **[{2}]({3})**, hehe.",
-        "I've fixed that **[{0}](<{1}>)** link to redirect properly, here: **[{2}]({3})**.",
-        "Your original **[{0}](<{1}>)** link has been replaced with **[{2}]({3})**.",
-        "I checked **[{0}](<{1}>)** and fixed it to **[{2}]({3})**, nice, isn't it?.",
-        "Here you go: **[{0}](<{1}>)** is now corrected as **[{2}]({3})**."
-    ];
-
-    // Same as above, but used when the user originally wrapped their link in spoilers ||...||
-    // The bot respects the spoiler tag.
-    public static readonly string[] LinkSpoilered =
-    [
-        "Oh! I wrapped your fixed **[{0}](<{1}>)** link with spoilers using **[{2}]({3})**!",
-        "Peek-a-boo! Your **[{0}](<{1}>)** link is now spoilered and fixed: **[{2}]({3})**.",
-        "I went ahead and fixed that **[{0}](<{1}>)** link, now it's spoilered: **[{2}]({3})**.",
-        "Alright, **[{0}](<{1}>)** is now corrected and wrapped in spoilers using **[{2}]({3})**.",
-        "Your link **[{0}](<{1}>)** is now both fixed and spoilered: **[{2}]({3})**~!",
-        "I fixed **[{0}](<{1}>)** for you and added spoilers: **[{2}]({3})**.",
-        "Here's your **[{0}](<{1}>)** link, properly fixed and spoilered: **[{2}]({3})**.",
-        "Fix complete! **[{0}](<{1}>)** is now spoilered and redirects to **[{2}]({3})**."
-    ];
 }

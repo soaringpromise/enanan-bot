@@ -117,39 +117,6 @@ public sealed class MessageService
         => Build(MiscMessages.InviteLink, EmojiCategory.Misc, args);
     
     /// <summary>
-    /// Constructs a message for the "Link Fixer" feature (e.g., converting x.com to fxtwitter.com).
-    /// Handles logic for preserving spoiler tags (||url||).
-    /// </summary>
-    /// <param name="originalLabel">The display text for the original link.</param>
-    /// <param name="originalUrl">The broken URL.</param>
-    /// <param name="fixerName">The service name (e.g., "FxTwitter").</param>
-    /// <param name="fixedUrl">The working embed URL.</param>
-    /// <param name="spoilered">If true, wraps the output in spoiler tags.</param>
-    public string BuildLinkFixMessage(
-        string originalLabel,
-        string originalUrl,
-        string fixerName,
-        string fixedUrl,
-        bool spoilered = false)
-    {
-        if (string.IsNullOrWhiteSpace(originalUrl) || string.IsNullOrWhiteSpace(fixedUrl))
-            return string.Empty;
-        
-        var templates = spoilered
-            ? MiscMessages.LinkSpoilered
-            : MiscMessages.LinkFixed;
-        
-        var template = templates[Random.Shared.Next(templates.Length)];
-
-        var emoji = EmojiService.Pick(EmojiCategory.Success);
-
-        var message = string.Format(template, originalLabel, originalUrl, fixerName, fixedUrl);
-        
-        // Wrap the entire message and emoji in spoiler tags if the original was spoilered
-        return spoilered ? $"||{message} {emoji}||" : $"{message} {emoji}";
-    }
-    
-    /// <summary>
     /// Core builder method. Picks a random template, formats it, and adds an emoji.
     /// </summary>
     private static string Build(string[] messages, EmojiCategory category, params object[] args)

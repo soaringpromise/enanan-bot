@@ -90,19 +90,14 @@ public class MessageCreateEvent(MessageService messages) : IMessageCreateGateway
             var (fixedUrl, fixerName) = await linkFixer.GetFixedUrlAsync();
             if (string.IsNullOrEmpty(fixedUrl)) continue;
 
-            // Format the reply message using the Service (adds emoji, formatting)
-            var responseMessage = messages.BuildLinkFixMessage(
-                linkFixer.HypertextLabel,
-                originalUrl,
-                fixerName!,
-                fixedUrl,
-                isSpoilered
-            );
+            var formattedMessage = isSpoilered
+                ? $"|| [**{linkFixer.HypertextLabel}**]({originalUrl}) ⟶ [**{fixerName}**]({fixedUrl}) ||"
+                : $"[**{linkFixer.HypertextLabel}**]({originalUrl}) ⟶ [**{fixerName}**]({fixedUrl})";
 
             try
             {
                 // Reply to the user with the fixed link
-                await msg.ReplyAsync(responseMessage);
+                await msg.ReplyAsync(formattedMessage);
                 
                 // We try to remove the embed from the USER'S original message so we don't have duplicates
                 // e.g., We don't want the broken Twitter embed AND the fixed FxTwitter embed visible at the same time
