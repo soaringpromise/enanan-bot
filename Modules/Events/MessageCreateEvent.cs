@@ -91,8 +91,8 @@ public class MessageCreateEvent(MessageService messages) : IMessageCreateGateway
             if (string.IsNullOrEmpty(fixedUrl)) continue;
 
             var formattedMessage = isSpoilered
-                ? $"|| [**{linkFixer.HypertextLabel}**]({originalUrl}) ⟶ [**{fixerName}**]({fixedUrl}) ||"
-                : $"[**{linkFixer.HypertextLabel}**]({originalUrl}) ⟶ [**{fixerName}**]({fixedUrl})";
+                ? $"|| [**{linkFixer.HypertextLabel}**](<{originalUrl}>) ⟶ [**{fixerName}**]({fixedUrl}) ||"
+                : $"[**{linkFixer.HypertextLabel}**](<{originalUrl}>) ⟶ [**{fixerName}**]({fixedUrl})";
 
             try
             {
