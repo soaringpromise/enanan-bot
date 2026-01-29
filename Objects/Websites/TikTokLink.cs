@@ -65,6 +65,5 @@ public class TikTokLink(string url) : GenericWebsiteLink(url)
             : Subdomains["Normal"];
     }
     
-    protected override string RouteFixSubdomain() =>
-        Subdomains.GetValueOrDefault(DefaultView, "");
+    protected override string RouteFixSubdomain() => "";
 }

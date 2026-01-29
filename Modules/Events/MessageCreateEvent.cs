@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using EnananBot.Objects;
 using EnananBot.Objects.Websites;
-using EnananBot.Services;
 using NetCord;
 using NetCord.Gateway;
 using NetCord.Hosting.Gateway;
@@ -17,7 +16,7 @@ namespace EnananBot.Modules.Events;
 /// The main event listener for new messages.
 /// Triggers whenever a user sends a message in a channel the bot can see.
 /// </summary>
-public class MessageCreateEvent(MessageService messages) : IMessageCreateGatewayHandler
+public class MessageCreateEvent : IMessageCreateGatewayHandler
 {
     // A compiled regex to quickly find HTTP/HTTPS links in text
     // Includes a timeout to prevent ReDoS
@@ -130,7 +129,7 @@ public class MessageCreateEvent(MessageService messages) : IMessageCreateGateway
         var emoji = Emojis.EasterEggs;
         const double weight = 0.7;
 
-        // Smaller chance of getting a slightly more humourous reaction
+        // Smaller chance of getting a slightly more humorous reaction
         var chosen = Rng.NextDouble() < weight ? emoji[0] : emoji[1];
 
         try

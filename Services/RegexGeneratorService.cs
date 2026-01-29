@@ -103,6 +103,7 @@ public sealed class RegexGeneratorService
             @"https?://(?:(?<subdomain>[^.]+)\.)?" +
             domainRegex +
             routeRegex +
+            "/?" +
             queryStringRegex +
             "(?:#.+)?" + 
             "$";

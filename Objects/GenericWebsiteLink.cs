@@ -114,7 +114,6 @@ public abstract class GenericWebsiteLink : WebsiteLink
         // Combine into a final.NET Regex Replacement Pattern
         return "https://{subdomain}{domain}" +
                routeRepl +
-               "{post_path_segments}" +
                queryStringRepl;
     }
     
