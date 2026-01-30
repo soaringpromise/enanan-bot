@@ -27,7 +27,7 @@ public static class AutocompleteService
             // Filter the available decorators based on the user's input.
             // Case-insensitive search
             var matches = Objects.Decorators.All.Where(x =>
-                x.Key.StartsWith(input, StringComparison.InvariantCultureIgnoreCase));
+                x.Key.Contains(input, StringComparison.InvariantCultureIgnoreCase));
 
             // Map valid matches to Discord Choice objects (Name = Display, Value = ID/Key)
             var choices = matches

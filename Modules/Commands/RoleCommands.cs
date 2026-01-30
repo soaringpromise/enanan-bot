@@ -235,7 +235,7 @@ public class RoleCommands(
             }
             
             // If nothing actually changed, bail early
-            if (finalName == role.Name && finalColor == role.Color)
+            if (finalName == role.Name && finalColor == role.Color && decoration == null)
             {
                 await ResponseUtils.SendSimpleResponse(
                     Context,
