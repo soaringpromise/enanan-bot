@@ -51,7 +51,7 @@ public class ColorCommands(
         {
             // Clean and check the color string
             var roleColorInput = colorString.ToLowerInvariant().StripInvalidChars();
-            if (!await TryValidateAsync(_validationService.ValidateRequiredColor(roleColorInput, username)))
+            if (!await TryValidateAsync(_validationService.ValidateColor(roleColorInput, username)))
                 return;
 
             var roleColor = ColorUtils.GetNormalizedHex(roleColorInput);
@@ -115,7 +115,7 @@ public class ColorCommands(
         {
             // Validate Input
             var roleColor = namedColor.ToLowerInvariant().StripInvalidChars();
-            if (!await TryValidateAsync(_validationService.ValidateRequiredColor(roleColor, username)))
+            if (!await TryValidateAsync(_validationService.ValidateColor(roleColor, username)))
                 return;
             
             // Generate Palette

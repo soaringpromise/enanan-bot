@@ -57,41 +57,33 @@ public sealed class ValidationService(
     /// <summary>
     /// Validates that a role name is not null or whitespace.
     /// </summary>
-    public Validation ValidateRoleName(string? roleName, string username)
+    public Validation ValidateRoleName(string? roleName, string username, bool required = true)
     {
-        return string.IsNullOrWhiteSpace(roleName)
-            ? Validation.Failure(
-                messages.ValidationEmptyName(username))
-            : Validation.Success();
+        if (string.IsNullOrWhiteSpace(roleName))
+        {
+            return required
+                ? Validation.Failure(
+                    messages.ValidationEmptyName(username))
+                : Validation.Success();
+        }
+
+        return Validation.Success();
     }
+
 
     /// <summary>
     /// Validates that a color string is BOTH present AND a valid hex code.
     /// Used for commands where color is a mandatory argument.
     /// </summary>
-    public Validation ValidateRequiredColor(string? colorString, string username)
-    {
-        // 1. Check existence
-        if (string.IsNullOrWhiteSpace(colorString))
-            return Validation.Failure(
-                messages.ValidationEmptyColor(username));
-
-        // 2. Check validity (Hex format)
-        return ColorUtils.NormalizeColorString(colorString) != null
-            ? Validation.Success()
-            : Validation.Failure(
-                messages.ValidationInvalidColor(username));
-    }
-    
-    /// <summary>
-    /// Validates a color string ONLY if it is present. 
-    /// If empty/null, it returns Success (allowing the command to proceed without a color change).
-    /// Used for "Edit" commands where parameters are optional.
-    /// </summary>
-    public Validation ValidateOptionalColor(string? colorString, string username)
+    public Validation ValidateColor(string? colorString, string username, bool required = true)
     {
         if (string.IsNullOrWhiteSpace(colorString))
-            return Validation.Success();
+        {
+            return required
+                ? Validation.Failure(
+                    messages.ValidationEmptyColor(username))
+                : Validation.Success();
+        }
 
         return ColorUtils.NormalizeColorString(colorString) != null
             ? Validation.Success()

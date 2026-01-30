@@ -32,6 +32,9 @@ public sealed class MessageService
     public string RoleDeleteError(params object[] args)
         => Build(RoleMessages.DeleteError, EmojiCategory.Error, args);
     
+    public string RoleEditNoChanges(params object[] args)
+        => Build(RoleMessages.RoleEditNoChanges, EmojiCategory.Failure, args);
+    
     // --- Validation Responses ---
     
     public string ValidationEmptyName(params object[] args)

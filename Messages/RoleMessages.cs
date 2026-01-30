@@ -58,4 +58,17 @@ public static class RoleMessages
         "Can we try that again, **{0}**? It's still there on my end.",
         "Looks like that didn't work. Let's get in touch with an admin and see if they can help?"
     ];
+    
+    // Error: {0} = Username
+    public static readonly string[] RoleEditNoChanges =
+    [
+        "…It looks the same to me, **{0}**.",
+        "I don't think anything actually changed?",
+        "Uh… did you mean to update something, **{0}**?",
+        "I checked, but it's still exactly the same.",
+        "You didn't really edit it, but… okay?",
+        "If you wanted it to stay like this, you didn't have to ask me.",
+        "Nothing new happened here, **{0}**.",
+        "Try changing something first, then I can fix it for you."
+    ];
 }

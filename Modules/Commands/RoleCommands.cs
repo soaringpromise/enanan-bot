@@ -83,7 +83,7 @@ public class RoleCommands(
 
             // Check color rules
             if (!await TryValidateAsync(
-                    _validationService.ValidateRequiredColor(roleColor, username)))
+                    _validationService.ValidateColor(roleColor, username)))
                 return;
 
             // Apply decorations (e.g. "★ Role Name ★")
@@ -194,50 +194,63 @@ public class RoleCommands(
                     await _validationService.UserDoesNotHaveUniqueRoleAsync(
                         guild.Id, user.Id, username)))
                 return;
-
+            
             // Validate inputs
             if (!await TryValidateAsync(
                     _validationService.ValidateIfAllEmpty(newName, newColorString, decoration, username)))
                 return;
             
             if (!await TryValidateAsync(
-                    _validationService.ValidateRoleName(newName, username)))
+                    _validationService.ValidateRoleName(newName, username, false)))
                 return;
-
+            
             if (!await TryValidateAsync(
-                    _validationService.ValidateOptionalColor(newColorString, username)))
+                    _validationService.ValidateColor(newColorString, username, false)))
                 return;
-
-            // Sanitize
-            var newRoleName = newName!.Trim().NormalizeSpaces();
-            var newRoleColor =
-                newColorString!.ToLowerInvariant().StripInvalidChars();
-
-            if (!string.IsNullOrWhiteSpace(decoration))
-                newRoleName = newRoleName.DecorateRoleName(decoration);
-
-            // Retrieve Role ID from Cache
+            
+            // Fetch Role object from Discord
             var roleId = await guildCache.GetRoleAsync(guild.Id, user.Id);
-            if (roleId == null)
+            var role = await guild.GetRoleAsync(roleId!.Value);
+            
+            // Build new values by reusing existing ones
+            var finalName = role.Name;
+            var finalColor = role.Color;
+
+            // Apply a new name if provided
+            if (!string.IsNullOrWhiteSpace(newName))
             {
-                // Should be caught by UserDoesNotHaveUniqueRoleAsync, but double-check safety.
+                finalName = newName.Trim().NormalizeSpaces();
+
+                if (!string.IsNullOrWhiteSpace(decoration))
+                    finalName = finalName.DecorateRoleName(decoration);
+            }
+
+            // Apply new color if provided
+            if (!string.IsNullOrWhiteSpace(newColorString))
+            {
+                var normalizedColor =
+                    newColorString.ToLowerInvariant().StripInvalidChars();
+
+                finalColor = ColorUtils.GetDiscordColor(normalizedColor);
+            }
+            
+            // If nothing actually changed, bail early
+            if (finalName == role.Name && finalColor == role.Color)
+            {
                 await ResponseUtils.SendSimpleResponse(
                     Context,
-                    messages.RoleEditError(username),
+                    messages.RoleEditNoChanges(username),
                     true);
                 return;
             }
-
-            // Fetch Role object from Discord
-            var role = await guild.GetRoleAsync(roleId.Value);
-
+            
             // Update Discord
             await role.ModifyAsync(r =>
             {
-                r.Name = newRoleName;
-                r.Color = ColorUtils.GetDiscordColor(newRoleColor);
+                r.Name = finalName;
+                r.Color = finalColor;
             });
-
+            
             await ResponseUtils.SendSimpleResponse(
                 Context,
                 messages.RoleEditSuccess(username));
