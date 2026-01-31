@@ -213,16 +213,15 @@ public class RoleCommands(
             var role = await guild.GetRoleAsync(roleId!.Value);
             
             // Build new values by reusing existing ones
-            var finalName = role.Name;
+            var finalName = !string.IsNullOrWhiteSpace(newName)
+                ? newName.Trim().NormalizeSpaces()
+                : role.Name;
             var finalColor = role.Color;
 
-            // Apply a new name if provided
-            if (!string.IsNullOrWhiteSpace(newName))
+            // Apply decoration if provided
+            if (!string.IsNullOrWhiteSpace(decoration))
             {
-                finalName = newName.Trim().NormalizeSpaces();
-
-                if (!string.IsNullOrWhiteSpace(decoration))
-                    finalName = finalName.DecorateRoleName(decoration);
+                finalName = finalName.DecorateRoleName(decoration);
             }
 
             // Apply new color if provided
@@ -235,7 +234,7 @@ public class RoleCommands(
             }
             
             // If nothing actually changed, bail early
-            if (finalName == role.Name && finalColor == role.Color && decoration == null)
+            if (finalName == role.Name && finalColor == role.Color)
             {
                 await ResponseUtils.SendSimpleResponse(
                     Context,
