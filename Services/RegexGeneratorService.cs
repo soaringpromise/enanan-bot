@@ -88,7 +88,7 @@ public sealed class RegexGeneratorService
         // Combine all query string lookaheads
         var queryStringRegex = parameters == null
             ? @"(?:\?.*)?"
-            : "(?:\\?(?:" + string.Join("&", queryStringParamRegexes) + ")?)?";
+            : "(?:" + string.Join("", queryStringParamRegexes) + @"\?.*)?";
 
         // --- Final Assembly ---
         // ^                 : Start of string
